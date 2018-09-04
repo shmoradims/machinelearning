@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.ML.Transforms.Onnx", "Microsoft.ML.Transforms.Onnx\Microsoft.ML.Transforms.Onnx.csproj", "{B5B31292-0FED-4ACC-9879-329728881CF3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5B31292-0FED-4ACC-9879-329728881CF3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B5B31292-0FED-4ACC-9879-329728881CF3}.Debug|x64.ActiveCfg = Release|x64
+		{B5B31292-0FED-4ACC-9879-329728881CF3}.Debug|x64.Build.0 = Release|x64
+		{B5B31292-0FED-4ACC-9879-329728881CF3}.Release|Any CPU.ActiveCfg = Release|x64
+		{B5B31292-0FED-4ACC-9879-329728881CF3}.Release|x64.ActiveCfg = Release|x64
+		{B5B31292-0FED-4ACC-9879-329728881CF3}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E1D7CF25-4267-493A-9759-9CDE2A143FE6}
+	EndGlobalSection
+EndGlobal
