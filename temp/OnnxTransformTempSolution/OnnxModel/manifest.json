@@ -1,0 +1,37 @@
+{
+  "dependencies": [],
+  "description": "",
+  "location": "",
+  "name": "fc1",
+  "params": {
+    "model": {
+      "frameworkVersion": "",
+      "graphVersion": 0,
+      "interfaces": [
+        {
+          "inputs": [
+            {
+              "description": "",
+              "internalName": "Input3",
+              "name": "input0",
+              "shape": "[1, 784]",
+              "type": "DATA_TYPE_FLOAT"
+            }
+          ],
+          "name": "Evaluate",
+          "outputs": [
+            {
+              "description": "",
+              "internalName": "Softmax423_Output_0",
+              "name": "output0",
+              "shape": "[1, 10]",
+              "type": "DATA_TYPE_FLOAT"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "typeName": "OnnxModel",
+  "version": 1
+}

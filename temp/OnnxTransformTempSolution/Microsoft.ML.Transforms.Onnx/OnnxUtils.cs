@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.ML.Runtime.Data;
 using Microsoft.ML.Scoring;
@@ -7,8 +8,80 @@ using OnnxShape = System.Collections.Generic.List<long>;
 
 namespace Microsoft.ML.Transforms.Onnx
 {
-    public class OnnxUtils
+    /// <summary>
+    /// OnnxModelInfo contains the data that we should get from 
+    /// Sonoma API once that functionality is added.
+    /// </summary>
+    public sealed class OnnxModelInfo
     {
+        public OnnxNodeInfo[] InputsInfo;
+        public OnnxNodeInfo[] OutputsInfo;
+    }
+
+    /// <summary>
+    /// OnnxNodeInfo contains all the information for a given node (e.g. inputs/outputs)
+    /// of an Onnx model.
+    /// </summary>
+    public class OnnxNodeInfo
+    {
+        public string Name;
+        public OnnxShape Shape;
+        public Type DataType = typeof(System.Single);
+    }
+
+    /// <summary>
+    /// OnnxModel is a facad for ModelManager. ModelManager is provided by Sonoma API, 
+    /// and it has a lot of functionality (multiple models, multiple versions) that are not
+    /// needed by Onnx transform, which only needs a single model. This facad simplifies the
+    /// usage of onnx model. 
+    /// </summary>
+    internal sealed class OnnxModel
+    {
+        private static readonly int IgnoredVersion = int.MaxValue;
+        private ModelManager _modelManager;
+        private string _modelName;
+        private readonly List<string> _inputNames;
+        private readonly List<string> _outputNames;
+
+        public OnnxModel(string modelFile, OnnxModelInfo modelInfo)
+        {
+            // Load the onnx model
+            var modelFileInfo = new FileInfo(modelFile);
+            _modelName = Path.GetFileNameWithoutExtension(modelFileInfo.Name);
+            _modelManager = new ModelManager(modelFileInfo.Directory.FullName, true);
+            _modelManager.InitModel(_modelName, IgnoredVersion);
+
+            _inputNames = modelInfo.InputsInfo.Select(i => i.Name).ToList();
+            _outputNames = modelInfo.OutputsInfo.Select(i => i.Name).ToList();
+        }
+
+        public OnnxModel(byte[] modelBytes)
+        {
+            throw new NotImplementedException("Need an API to serialize/deserialize onnx models to byte arrays!");
+        }
+
+        public List<Tensor> Run(List<Tensor> inputTensors)
+        {
+            var outputTensors = _modelManager.RunModel(
+                _modelName, IgnoredVersion, _inputNames, inputTensors, _outputNames);
+
+            return outputTensors;
+        }
+
+        public byte[] ToByteArray()
+        {
+            throw new NotImplementedException("Need an API to serialize/deserialize onnx models to byte arrays!");
+        }
+    }
+
+    internal sealed class OnnxUtils
+    {
+        /// <summary>
+        /// Sonoma API only provides Tensor() constructors with overloaded versions
+        /// based on data type. ML.NET cannot use the overloaded version and requires 
+        /// generic version. CreateScalarTensor<T> is generic wrapper on top of
+        /// overloaded Tensor(T data) constructors.
+        /// </summary>
         public static Tensor CreateScalarTensor<T>(T data)
         {
             if (typeof(T) == typeof(System.Boolean))
@@ -62,6 +135,12 @@ namespace Microsoft.ML.Transforms.Onnx
             throw new NotSupportedException($"Unsupported type {typeof(T)}");
         }
 
+        /// <summary>
+        /// Sonoma API only provides Tensor() constructors with overloaded versions
+        /// based on data type. ML.NET cannot use the overloaded version and requires 
+        /// generic version. CreateTensor<T> is generic wrapper on top of
+        /// overloaded Tensor(T[] data, OnnxShape shape) constructors.
+        /// </summary>
         public static Tensor CreateTensor<T>(T[] data, OnnxShape shape)
         {
             if (typeof(T) == typeof(System.Boolean))
@@ -84,9 +163,17 @@ namespace Microsoft.ML.Transforms.Onnx
             {
                 return new Tensor(((System.Int64[])(object)data).ToList(), shape);
             }
-            throw new NotSupportedException($"Unsupported type {typeof(T)}");
+            throw new NotImplementedException($"Not implemented type {typeof(T)}");
         }
 
+        /// <summary>
+        /// Sonoma API only provides CopyTo() functions with overloaded versions
+        /// based on data type. ML.NET cannot use the overloaded version and requires 
+        /// generic version. CopyTo<T> is generic wrapper on top of
+        /// overloaded Tensor.CopyTo(List<T> dst) methods.
+        /// Also Tensor.CopyTo(List<T> dst) requires a list input, whereas ML.NET
+        /// provides array buffers to copy values to. This mismatch causes an extra copy.
+        /// </summary>
         public static void CopyTo<T>(Tensor tensor, T[] dst)
         {
             if (typeof(T) == typeof(System.Single))
@@ -98,7 +185,7 @@ namespace Microsoft.ML.Transforms.Onnx
                 listDst.CopyTo(typedDst);
             }
             else
-                throw new NotImplementedException($"Unsupported type {typeof(T)}");
+                throw new NotImplementedException($"Not implemented type {typeof(T)}");
         }
 
         public static PrimitiveType RawToMlNetType(Type type)
