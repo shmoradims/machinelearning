@@ -29,15 +29,17 @@ namespace Microsoft.ML.Samples.Dynamic.Trainers.Regression
             var model = pipeline.Fit(trainingData);
 
             // Create testing examples. Use different random seed to make it different from training data.
-            var testingData = mlContext.Data.LoadFromEnumerable(GenerateRandomDataPoints(500, seed:123));
+            var testData = mlContext.Data.LoadFromEnumerable(GenerateRandomDataPoints(500, seed:123));
 
-            var predictions = model.Transform(testingData);
+            // Run the model on test data set.
+            var transformedTestData = model.Transform(testData);
 
-            // Look at 10 predictions
-            var trueLabels = predictions.GetColumn<float>("Label").Take(10).ToArray();
-            var predictedLabels = predictions.GetColumn<float>("Score").Take(10).ToArray();
-            for (int i = 0; i < 10; i++)
-                Console.WriteLine($"Label: {trueLabels[i]:F3}, Prediction: {predictedLabels[i]:F3}");
+            // Convert IDataView object to a list.
+            var predictions = mlContext.Data.CreateEnumerable<Prediction>(transformedTestData, reuseRowObject: false).ToList();
+
+            // Look at 5 predictions
+            foreach (var p in predictions.Take(5))
+                Console.WriteLine($"Label: {p.Label:F3}, Prediction: {p.Score:F3}");
 
             // Expected output:
             //   Label: 0.985, Prediction: 0.938
@@ -45,14 +47,9 @@ namespace Microsoft.ML.Samples.Dynamic.Trainers.Regression
             //   Label: 0.515, Prediction: 0.517
             //   Label: 0.566, Prediction: 0.519
             //   Label: 0.096, Prediction: 0.089
-            //   Label: 0.061, Prediction: 0.050
-            //   Label: 0.078, Prediction: 0.073
-            //   Label: 0.509, Prediction: 0.438
-            //   Label: 0.549, Prediction: 0.558
-            //   Label: 0.721, Prediction: 0.494
 
             // Evaluate the overall metrics
-            var metrics = mlContext.Regression.Evaluate(predictions);
+            var metrics = mlContext.Regression.Evaluate(transformedTestData);
             SamplesUtils.ConsoleUtils.PrintMetrics(metrics);
 
             // Expected output:
@@ -78,11 +75,21 @@ namespace Microsoft.ML.Samples.Dynamic.Trainers.Regression
             }
         }
 
+        // Example with label and 50 feature values. A data set is a collection of such examples.
         private class DataPoint
         {
             public float Label { get; set; }
             [VectorType(50)]
             public float[] Features { get; set; }
+        }
+
+        // Class used to capture predictions.
+        private class Prediction
+        {
+            // Original label.
+            public float Label { get; set; }
+            // Predicted score from the trainer.
+            public float Score { get; set; }
         }
     }
 }
