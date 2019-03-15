@@ -7,8 +7,8 @@ namespace Microsoft.ML.Samples.Dynamic.Trainers.Regression
 {
     public static class FastTree
     {
-        // This example requires installation of additional NuGet package
-        // <a href="https://www.nuget.org/packages/Microsoft.ML.FastTree/">Microsoft.ML.FastTree</a>.
+        // This example requires installation of Microsoft.ML.FastTree NuGet package:
+        // https://www.nuget.org/packages/Microsoft.ML.FastTree/
         public static void Example()
         {
             // Create a new context for ML.NET operations. It can be used for exception tracking and logging, 
@@ -16,7 +16,7 @@ namespace Microsoft.ML.Samples.Dynamic.Trainers.Regression
             // Setting the seed to a fixed number in this example to make outputs deterministic.
             var mlContext = new MLContext(seed: 0);
 
-            // Create a list of training examples
+            // Create a list of training examples.
             var examples = GenerateRandomDataPoints(1000);
 
             // Convert the examples list to an IDataView object, which is consumable by ML.NET API.
@@ -28,10 +28,8 @@ namespace Microsoft.ML.Samples.Dynamic.Trainers.Regression
             // Train the model.
             var model = pipeline.Fit(trainingData);
 
-            // Create testing examples. Use different random seed to make it
-            // different from training data.
-            var testingData = mlContext.Data.LoadFromEnumerable(
-                                    GenerateRandomDataPoints(500, seed:123));
+            // Create testing examples. Use different random seed to make it different from training data.
+            var testingData = mlContext.Data.LoadFromEnumerable(GenerateRandomDataPoints(500, seed:123));
 
             var predictions = model.Transform(testingData);
 
