@@ -733,10 +733,10 @@ namespace Microsoft.ML
         /// and choosing the prediction with the highest confidence score.
         /// </para>
         /// </remarks>
-        /// <param name="catalog">The <see cref="MulticlassClassificationCatalog.MulticlassClassificationTrainers"/>.</param>
+        /// <param name="catalog">The multiclass classification catalog trainer object.</param>
         /// <param name="binaryEstimator">An instance of a binary <see cref="ITrainerEstimator{TTransformer, TPredictor}"/> used as the base trainer.</param>
-        /// <param name="calibrator">The calibrator. If a calibrator is not explicitely provided, it will default to <see cref="PlattCalibratorTrainer"/></param>
-        /// <param name="labelColumnName">The name of the label colum.</param>
+        /// <param name="calibrator">The calibrator. If a calibrator is not explicitly provided, it will default to <see cref="PlattCalibratorTrainer"/></param>
+        /// <param name="labelColumnName">The name of the label column.</param>
         /// <param name="imputeMissingLabelsAsNegative">Whether to treat missing labels as having negative labels, instead of keeping them missing.</param>
         /// <param name="maximumCalibrationExampleCount">Number of instances to train the calibrator.</param>
         /// <param name="useProbabilities">Use probabilities (vs. raw outputs) to identify top-score category.</param>
@@ -773,10 +773,10 @@ namespace Microsoft.ML
         /// classifiers predicted it. The prediction is the class with the highest score.
         /// </para>
         /// </remarks>
-        /// <param name="catalog">The <see cref="MulticlassClassificationCatalog.MulticlassClassificationTrainers"/>.</param>
+        /// <param name="catalog">The multiclass classification catalog trainer object.</param>
         /// <param name="binaryEstimator">An instance of a binary <see cref="ITrainerEstimator{TTransformer, TPredictor}"/> used as the base trainer.</param>
-        /// <param name="calibrator">The calibrator. If a calibrator is not explicitely provided, it will default to <see cref="PlattCalibratorTrainer"/></param>
-        /// <param name="labelColumnName">The name of the label colum.</param>
+        /// <param name="calibrator">The calibrator. If a calibrator is not explicitly provided, it will default to <see cref="PlattCalibratorTrainer"/></param>
+        /// <param name="labelColumnName">The name of the label column.</param>
         /// <param name="imputeMissingLabelsAsNegative">Whether to treat missing labels as having negative labels, instead of keeping them missing.</param>
         /// <param name="maximumCalibrationExampleCount">Number of instances to train the calibrator.</param>
         /// <typeparam name="TModel">The type of the model. This type parameter will usually be inferred automatically from <paramref name="binaryEstimator"/>.</typeparam>
