@@ -38,7 +38,7 @@ namespace Microsoft.ML.Trainers
     using TScalarPredictor = IPredictorProducing<float>;
     using TScalarTrainer = ITrainerEstimator<ISingleFeaturePredictionTransformer<IPredictorProducing<float>>, IPredictorProducing<float>>;
     /// <summary>
-    /// The <see cref="IEstimator{TTransformer}"/> for training a one-versus-all multi-class classifier on top of the specified binary classifier.
+    /// The <see cref="IEstimator{TTransformer}"/> for training a one-versus-all multi-class classifier that uses the specified binary classifier.
     /// </summary>
     /// <remarks>
     /// <format type="text/markdown"><![CDATA[
